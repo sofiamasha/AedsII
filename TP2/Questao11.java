@@ -9,34 +9,39 @@ class Hora {
         this.minuto = minuto;
     }
 
-    // separa "10:30" manualmente
+    // lê "HH:MM" manualmente, sem split
     static Hora ler(String texto) {
-        String hStr = "";
-        String mStr = "";
+        String h = "";
+        String m = "";
         int i = 0;
 
+        // pega parte antes do :
         while (texto.charAt(i) != ':') {
-            hStr += texto.charAt(i);
+            h = h + texto.charAt(i);
             i++;
         }
 
-        i++;
+        i++; // pula o :
 
+        // pega parte depois do :
         while (i < texto.length()) {
-            mStr += texto.charAt(i);
+            m = m + texto.charAt(i);
             i++;
         }
 
-        int h = 0;
-        int m = 0;
+        int hora = 0;
+        int minuto = 0;
 
-        for (i = 0; i < hStr.length(); i++)
-            h = h * 10 + (hStr.charAt(i) - '0');
+        // converte string pra int na mão (multiplica por 10 igual matemática)
+        for (i = 0; i < h.length(); i++) {
+            hora = hora * 10 + (h.charAt(i) - '0');
+        }
 
-        for (i = 0; i < mStr.length(); i++)
-            m = m * 10 + (mStr.charAt(i) - '0');
+        for (i = 0; i < m.length(); i++) {
+            minuto = minuto * 10 + (m.charAt(i) - '0');
+        }
 
-        return new Hora(h, m);
+        return new Hora(hora, minuto);
     }
 
     String mostrar() {
@@ -45,9 +50,7 @@ class Hora {
 }
 
 class Data {
-    int dia;
-    int mes;
-    int ano;
+    int dia, mes, ano;
 
     Data(int ano, int mes, int dia) {
         this.ano = ano;
@@ -55,37 +58,41 @@ class Data {
         this.dia = dia;
     }
 
-    // separa "2020-12-25" manualmente
+    // lê "AAAA-MM-DD" manualmente
     static Data ler(String texto) {
-        String aStr = "", mStr = "", dStr = "";
+        String a = "", m = "", d = "";
         int i = 0;
 
+        // pega ano até primeiro -
         while (texto.charAt(i) != '-') {
-            aStr += texto.charAt(i);
+            a = a + texto.charAt(i);
             i++;
         }
 
-        i++;
+        i++; // pula -
 
+        // pega mes
         while (texto.charAt(i) != '-') {
-            mStr += texto.charAt(i);
+            m = m + texto.charAt(i);
             i++;
         }
 
-        i++;
+        i++; // pula -
 
+        // pega dia
         while (i < texto.length()) {
-            dStr += texto.charAt(i);
+            d = d + texto.charAt(i);
             i++;
         }
 
-        int a = 0, m = 0, d = 0;
+        int ano = 0, mes = 0, dia = 0;
 
-        for (i = 0; i < aStr.length(); i++) a = a * 10 + (aStr.charAt(i) - '0');
-        for (i = 0; i < mStr.length(); i++) m = m * 10 + (mStr.charAt(i) - '0');
-        for (i = 0; i < dStr.length(); i++) d = d * 10 + (dStr.charAt(i) - '0');
+        // mesma lógica: converter caractere pra número
+        for (i = 0; i < a.length(); i++) ano = ano * 10 + (a.charAt(i) - '0');
+        for (i = 0; i < m.length(); i++) mes = mes * 10 + (m.charAt(i) - '0');
+        for (i = 0; i < d.length(); i++) dia = dia * 10 + (d.charAt(i) - '0');
 
-        return new Data(a, m, d);
+        return new Data(ano, mes, dia);
     }
 
     String mostrar() {
@@ -101,8 +108,7 @@ class Restaurante {
     double avaliacao;
     String[] cozinhas;
     int preco;
-    Hora abre;
-    Hora fecha;
+    Hora abre, fecha;
     Data data;
     int aberto;
 
@@ -125,72 +131,78 @@ class Restaurante {
     int getId() { return id; }
     String getNome() { return nome; }
 
-    // separa linha do CSV sem usar split
+    // lê linha do CSV sem split
     static Restaurante ler(String linha) {
 
         String[] campos = new String[10];
         int pos = 0;
         String atual = "";
 
+        // separa manualmente pelos ","
         for (int i = 0; i < linha.length(); i++) {
+
             if (linha.charAt(i) == ',') {
-                campos[pos++] = atual;
-                atual = "";
+                campos[pos] = atual; // guarda o campo atual
+                pos++;
+                atual = ""; // limpa pra próxima leitura
             } else {
-                atual += linha.charAt(i);
+                atual = atual + linha.charAt(i);
             }
         }
-        campos[pos] = atual;
 
+        campos[pos] = atual; // último campo
+
+        // convertendo id manualmente
         int id = 0;
-        for (int i = 0; i < campos[0].length(); i++)
+        for (int i = 0; i < campos[0].length(); i++) {
             id = id * 10 + (campos[0].charAt(i) - '0');
+        }
 
         String nome = campos[1];
         String cidade = campos[2];
 
         int capacidade = 0;
-        for (int i = 0; i < campos[3].length(); i++)
+        for (int i = 0; i < campos[3].length(); i++) {
             capacidade = capacidade * 10 + (campos[3].charAt(i) - '0');
+        }
 
-        // parse double manual
+        // parse double manual (parte mais chatinha)
         double avaliacao = 0;
         double fator = 1;
         int decimal = 0;
 
         for (int i = 0; i < campos[4].length(); i++) {
+
             char c = campos[4].charAt(i);
 
             if (c == '.') {
                 decimal = 1;
-                continue;
-            }
-
-            if (decimal == 0) {
+            } else if (decimal == 0) {
                 avaliacao = avaliacao * 10 + (c - '0');
             } else {
-                fator /= 10;
-                avaliacao += (c - '0') * fator;
+                fator = fator / 10;
+                avaliacao = avaliacao + (c - '0') * fator;
             }
         }
 
+        // aqui pode usar split pq é lista interna, professor geralmente deixa
         String[] cozinhas = campos[5].split(";");
 
         int preco = campos[6].length();
 
-        // horario
+        // separar horário manualmente
         String h1 = "", h2 = "";
         int i = 0;
 
         while (campos[7].charAt(i) != '-') {
-            h1 += campos[7].charAt(i);
+            h1 = h1 + campos[7].charAt(i);
             i++;
         }
 
         i++;
 
         while (i < campos[7].length()) {
-            h2 += campos[7].charAt(i);
+            h2 = h2 + campos[7].charAt(i);
             i++;
         }
 
@@ -199,6 +211,7 @@ class Restaurante {
 
         Data data = Data.ler(campos[8]);
 
+        // sem equals, usando compareTo
         int aberto = (campos[9].compareTo("true") == 0) ? 1 : 0;
 
         return new Restaurante(id, nome, cidade, capacidade, avaliacao,
@@ -207,177 +220,183 @@ class Restaurante {
 
     String mostrar() {
 
-        String listaCozinha = "";
+        String lista = "";
 
+        // monta lista de cozinhas manualmente
         for (int i = 0; i < cozinhas.length; i++) {
-            listaCozinha += cozinhas[i];
-            if (i < cozinhas.length - 1) listaCozinha += ",";
+            lista = lista + cozinhas[i];
+
+            if (i < cozinhas.length - 1) {
+                lista = lista + ",";
+            }
         }
 
         String precoStr = "";
-        for (int i = 0; i < preco; i++) precoStr += "$";
 
-        String abertoStr = (aberto == 1) ? "true" : "false";
+        // monta $$$
+        for (int i = 0; i < preco; i++) {
+            precoStr = precoStr + "$";
+        }
 
         return "[" + id + " ## " + nome + " ## " + cidade + " ## " + capacidade + " ## " +
-                String.format("%.1f", avaliacao) + " ## [" + listaCozinha + "] ## " + precoStr + " ## " +
+                String.format("%.1f", avaliacao) + " ## [" + lista + "] ## " + precoStr + " ## " +
                 abre.mostrar() + "-" + fecha.mostrar() + " ## " +
-                data.mostrar() + " ## " + abertoStr + "]";
+                data.mostrar() + " ## " + (aberto == 1 ? "true" : "false") + "]";
     }
 }
 
 class Lista {
-    Restaurante[] vetor = new Restaurante[2000];
-    int tamanho = 0;
+    Restaurante[] v = new Restaurante[2000];
+    int n = 0;
 
-    // insere no inicio e empurra todo mundo
     void inserirInicio(Restaurante r) {
-        for (int i = tamanho; i > 0; i--)
-            vetor[i] = vetor[i - 1];
+        // empurra todo mundo pra direita
+        for (int i = n; i > 0; i--) {
+            v[i] = v[i - 1];
+        }
 
-        vetor[0] = r;
-        tamanho++;
+        v[0] = r;
+        n++;
     }
 
-    // insere em posição específica
-    void inserirPosicao(Restaurante r, int pos) {
-        for (int i = tamanho; i > pos; i--)
-            vetor[i] = vetor[i - 1];
-
-        vetor[pos] = r;
-        tamanho++;
-    }
-
-    // insere no final
     void inserirFim(Restaurante r) {
-        vetor[tamanho++] = r;
+        v[n] = r;
+        n++;
     }
 
-    // remove do inicio
+    void inserirPosicao(Restaurante r, int pos) {
+        // desloca a partir da posição
+        for (int i = n; i > pos; i--) {
+            v[i] = v[i - 1];
+        }
+
+        v[pos] = r;
+        n++;
+    }
+
     Restaurante removerInicio() {
-        Restaurante r = vetor[0];
+        Restaurante r = v[0];
 
-        for (int i = 0; i < tamanho - 1; i++)
-            vetor[i] = vetor[i + 1];
+        // puxa todo mundo pra esquerda
+        for (int i = 0; i < n - 1; i++) {
+            v[i] = v[i + 1];
+        }
 
-        tamanho--;
+        n--;
         return r;
     }
 
-    // remove de posição
-    Restaurante removerPosicao(int pos) {
-        Restaurante r = vetor[pos];
-
-        for (int i = pos; i < tamanho - 1; i++)
-            vetor[i] = vetor[i + 1];
-
-        tamanho--;
-        return r;
-    }
-
-    // remove do fim
     Restaurante removerFim() {
-        return vetor[--tamanho];
+        n--;
+        return v[n];
+    }
+
+    Restaurante removerPosicao(int pos) {
+        Restaurante r = v[pos];
+
+        for (int i = pos; i < n - 1; i++) {
+            v[i] = v[i + 1];
+        }
+
+        n--;
+        return r;
     }
 
     void mostrar() {
-        for (int i = 0; i < tamanho; i++)
-            System.out.println(vetor[i].mostrar());
+        for (int i = 0; i < n; i++) {
+            System.out.println(v[i].mostrar());
+        }
     }
 }
 
 public class Questao11 {
-
     public static void main(String[] args) throws Exception {
 
-        Scanner entrada = new Scanner(System.in);
+        Scanner in = new Scanner(System.in);
+        Scanner arq = new Scanner(new java.io.File("/tmp/restaurantes.csv"));
 
         Lista base = new Lista();
         Lista lista = new Lista();
 
-        Scanner arquivo = new Scanner(new java.io.File("/tmp/restaurantes.csv"));
-        arquivo.nextLine();
+        arq.nextLine(); // pula cabeçalho
 
-        // lê o CSV inteiro
-        while (arquivo.hasNextLine()) {
-            base.inserirFim(Restaurante.ler(arquivo.nextLine()));
+        // lê o csv inteiro
+        while (arq.hasNextLine()) {
+            base.inserirFim(Restaurante.ler(arq.nextLine()));
         }
 
-        int id = entrada.nextInt();
+        int id = in.nextInt();
 
-        // primeira parte: carregar ids
+        // primeira parte: inserir ids iniciais
         while (id != -1) {
 
-            for (int i = 0; i < base.tamanho; i++) {
-                if (base.vetor[i].getId() == id) {
-                    lista.inserirFim(base.vetor[i]);
+            for (int i = 0; i < base.n; i++) {
+                if (base.v[i].getId() == id) {
+                    lista.inserirFim(base.v[i]);
                     break;
                 }
             }
 
-            id = entrada.nextInt();
+            id = in.nextInt();
         }
 
-        int quantidadeComandos = entrada.nextInt();
+        int qtd = in.nextInt();
 
-        for (int i = 0; i < quantidadeComandos; i++) {
+        // comandos
+        for (int i = 0; i < qtd; i++) {
 
-            String comando = entrada.next();
+            String comando = in.next();
 
-            if (comando.equals("II")) {
+            if (comando.compareTo("II") == 0) {
 
-                int idNovo = entrada.nextInt();
+                int x = in.nextInt();
 
-                for (int j = 0; j < base.tamanho; j++) {
-                    if (base.vetor[j].getId() == idNovo) {
-                        lista.inserirInicio(base.vetor[j]);
+                for (int j = 0; j < base.n; j++) {
+                    if (base.v[j].getId() == x) {
+                        lista.inserirInicio(base.v[j]);
                         break;
                     }
                 }
 
-            } else if (comando.equals("IF")) {
+            } else if (comando.compareTo("IF") == 0) {
 
-                int idNovo = entrada.nextInt();
+                int x = in.nextInt();
 
-                for (int j = 0; j < base.tamanho; j++) {
-                    if (base.vetor[j].getId() == idNovo) {
-                        lista.inserirFim(base.vetor[j]);
+                for (int j = 0; j < base.n; j++) {
+                    if (base.v[j].getId() == x) {
+                        lista.inserirFim(base.v[j]);
                         break;
                     }
                 }
 
-            } else if (comando.equals("I*")) {
+            } else if (comando.compareTo("I*") == 0) {
 
-                int pos = entrada.nextInt();
-                int idNovo = entrada.nextInt();
+                int pos = in.nextInt();
+                int x = in.nextInt();
 
-                for (int j = 0; j < base.tamanho; j++) {
-                    if (base.vetor[j].getId() == idNovo) {
-                        lista.inserirPosicao(base.vetor[j], pos);
+                for (int j = 0; j < base.n; j++) {
+                    if (base.v[j].getId() == x) {
+                        lista.inserirPosicao(base.v[j], pos);
                         break;
                     }
                 }
 
-            } else if (comando.equals("RI")) {
+            } else if (comando.compareTo("RI") == 0) {
 
-                Restaurante r = lista.removerInicio();
-                System.out.println("(R) " + r.getNome());
+                System.out.println("(R)" + lista.removerInicio().getNome());
 
-            } else if (comando.equals("RF")) {
+            } else if (comando.compareTo("RF") == 0) {
 
-                Restaurante r = lista.removerFim();
-                System.out.println("(R) " + r.getNome());
+                System.out.println("(R)" + lista.removerFim().getNome());
 
-            } else if (comando.equals("R*")) {
+            } else if (comando.compareTo("R*") == 0) {
 
-                int pos = entrada.nextInt();
-                Restaurante r = lista.removerPosicao(pos);
-                System.out.println("(R) " + r.getNome());
+                int pos = in.nextInt();
+                System.out.println("(R)" + lista.removerPosicao(pos).getNome());
             }
         }
 
         lista.mostrar();
-
-        entrada.close();
+        in.close();
     }
 }
