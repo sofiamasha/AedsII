@@ -28,14 +28,14 @@ typedef struct {
     int aberto;
 } Restaurante;
 
-// transforma "HH:MM"
+// transforma em 12:30
 Hora pegaHora(char *s) {
     Hora h;
     sscanf(s, "%d:%d", &h.hora, &h.minuto);
     return h;
 }
 
-// transforma "AAAA-MM-DD"
+// transforma 2020-03-12
 Data pegaData(char *s) {
     Data d;
     sscanf(s, "%d-%d-%d", &d.ano, &d.mes, &d.dia);
