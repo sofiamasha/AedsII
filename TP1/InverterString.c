@@ -1,27 +1,40 @@
-/*Invers˜ao de String - Crie um m´etodo iterativo que recebe uma string como parˆametro
-e retorna a string invertida. Na sa´ıda padr˜ao, para cada linha de entrada, escreva uma linha de
-sa´ıda com a string invertida. Por exemplo, se a entrada for “abcde”, a sa´ıda deve ser “edcba”*/*/
-
 #include <stdio.h>
+
+int fim(char s[]){
+    int resp = 0;
+
+    if(s[0] == 'F' && s[1] == 'I' && s[2] == 'M' && s[3] == '\0'){
+        resp = 1;
+    }
+
+    return resp;
+}
 
 int main(void){
 
-    //printf("Digite uma palavra");
+    char palavra[200];
 
-    char s[200];
+    while(1){
 
-    
-     
-    while(scanf("%s", s)!=EOF){
-        int cont=0;
-    for(int i=0; s[i] != '\0'; i++){
-        cont++;
-        
+        scanf(" %[^\n]", palavra);
+
+        if(fim(palavra)){
+            break;
+        }
+
+        // percorre a string da ultima letra ate a primeira
+        int tam = 0;
+
+        for(int i = 0; palavra[i] != '\0'; i++){
+            tam++;
+        }
+
+        for(int i = tam - 1; i >= 0; i--){
+            printf("%c", palavra[i]);
+        }
+
+        printf("\n");
     }
-    for(int i=cont-1; i>=0; i--){
-        printf("%c", s[i]);
-    }
-    printf("\n");
-    }
+
     return 0;
 }

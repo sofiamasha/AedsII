@@ -1,57 +1,61 @@
-/*Altera¸c˜ao Aleat´oria - Crie um m´etodo iterativo que recebe uma string, sorteia duas
-letras min´usculas aleat´orias (c´odigo ASCII ≥ ’a’ e ≤ ’z’), substitui todas as ocorrˆencias da
-primeira letra na string pela segunda e retorna a string com as altera¸c˜oes efetuadas. Na sa´ıda
-padr˜ao, para cada linha de entrada, execute o m´etodo desenvolvido nesta quest˜ao e mostre a
-string retornada como uma linha de sa´ıda. Abaixo, observamos um exemplo de entrada supondo
-que para a primeira linha as letras sorteados foram o ’a’ e o ’q’. Para a segunda linha, foram o
-’e’ e o ’k’.
-EXEMPLO DE ENTRADA: EXEMPLO DE SA´IDA:
-o rato roeu a roupa do rei de roma o rqto roeu q roupq do rei de romq
-e qwe qwe qwe ewq ewq ewq k qwk qwk qwk kwq kwq kwq
-FIM
-A classe Random do Java gera n´umeros (ou letras) aleat´orios e o exemplo abaixo mostra uma
-letra min´uscula na tela. Em especial, destacamos que: i) seed ´e a semente para gera¸c˜ao de
-n´umeros aleat´orios; ii) nesta quest˜ao, por causa da corre¸c˜ao autom´atica, a seed ser´a quatro; iii)
-a disciplina de Estat´ıstica e Probabilidade faz uma discuss˜ao sobre “aleat´orio”.
-1 Random gerador = new Random( ) ;
-2 gerador . setSeed ( 4 ) ;
-3 System. out . pr int ln ( ( char ) ( ’ a ’ + (Math. abs ( gerador . nextInt ( ) ) % 2 6 ) ) ) ; */
-
 import java.util.Random;
-import java.util.Scanner;
 
-public class Alteracao{
+public class AlteracaoA {
 
-    public static void main(String [] args){
-        Scanner sc=new Scanner(System.in);
+    // Ve se a entrada é FIM
+    public static boolean Fim(String s) {
+        boolean resp = false;
 
-        Random gerador = new Random();
-        gerador.setSeed(4);
-
-        while(sc.hasNextLine()){
-            char letra1 = (char)('a' + (Math.abs(gerador.nextInt()) % 26));
-            char letra2 = (char)('a' + (Math.abs(gerador.nextInt()) % 26));
-            String palavra = sc.nextLine();
-
-            for(int i=0; i<palavra.length(); i++){
-                char c=palavra.charAt(i);
-   
-    if(c==letra1){
-        c=letra2;
-    }
-    System.out.print(c);
-
-            
-
+        if (s.length() == 3) {
+            if (s.charAt(0) == 'F' && s.charAt(1) == 'I' && s.charAt(2) == 'M') {
+                resp = true;
             }
-            System.out.println();
-         
-
-
         }
 
-
-        sc.close();
+        return resp;
     }
 
+    // Percorre a string e troca a primeira letra sorteada pela segunda
+    public static String alterar(String s, char letra1, char letra2) {
+        String resp = "";
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            // Se achar a letra sorteada, coloca a outra no lugar
+            if (c == letra1) {
+                resp = resp + letra2;
+            } else {
+                resp = resp + c;
+            }
+        }
+
+        return resp;
+    }
+
+    public static void main(String[] args) {
+        String entrada = "";
+        Random gerador = new Random();
+
+        // A seed 4 faz a sequência aleatória ser sempre a mesma
+        gerador.setSeed(4);
+
+        // Continua lendo até aparecer FIM
+        while (Fim(entrada) == false) {
+            entrada = MyIO.readLine();
+
+            if (Fim(entrada) == false) {
+
+                // Sorteia a primeira letra entre a e z
+                char letra1 = (char)('a' + (Math.abs(gerador.nextInt()) % 26));
+
+                // Sorteia a segunda letra entre a e z
+                char letra2 = (char)('a' + (Math.abs(gerador.nextInt()) % 26));
+
+                String resp = alterar(entrada, letra1, letra2);
+
+                MyIO.println(resp);
+            }
+        }
+    }
 }
