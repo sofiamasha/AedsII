@@ -23,6 +23,6 @@ public class Data {
     }
 
     public String format() {
-        return dia + "/" + mes + "/" + ano;
+        return String.format("%02d/%02d/%04d", dia, mes, ano);
     }
 }

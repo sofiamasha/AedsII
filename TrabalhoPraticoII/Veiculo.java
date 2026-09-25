@@ -100,7 +100,6 @@ public class Veiculo {
         return dataRegistro;
     }
 
-
     public String format() {
 
         String combustiveis = "";
@@ -124,9 +123,9 @@ public class Veiculo {
                 + cilindrada + " ## "
                 + transmissao + " ## "
                 + tracao + " ## "
-                + consumoCidade + " ## "
-                + consumoEstrada + " ## "
-                + co2 + " ## "
+                + String.format("%.2f", consumoCidade) + " ## "
+                + String.format("%.2f", consumoEstrada) + " ## "
+                + String.format("%.1f", co2) + " ## "
                 + turbo + " ## "
                 + dataRegistro.format() + "]";
     }
